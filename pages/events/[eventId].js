@@ -30,10 +30,16 @@ function EventDetailPage(props) {
 export default EventDetailPage;
 
 export async function getStaticProps(context) {
-    console.log("---------getStaticProps---------");
+    console.log("--- [eventId].js getStaticProps ---");
     const eventId = context.params.eventId;
+    console.log(`--- context eventId = ${eventId} ---`);
     const event = await getEventById(eventId);
-    
+    if(!event) {
+        return {
+            notFound: true
+        }
+    }
+
     return {
         props: {
             selectedEvent: event
@@ -44,6 +50,8 @@ export async function getStaticProps(context) {
 
 export async function getStaticPaths() {
     const events = await getFeaturedEvents();
+
+    //prepare paths with parameter eventId, these paths will be pre-generated
     const paths = events.map(event => ({params: { eventId: event.id}}));
     //const paths = [];
     console.log("--- [eventId].js getStaticPaths ---")
